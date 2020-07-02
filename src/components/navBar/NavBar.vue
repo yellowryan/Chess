@@ -1,5 +1,5 @@
 <template>
-  <div id="nav_bar">
+  <div id="nav_bar" class="clearfix">
     <div class="app_header header">
       <div class="logo">
         <div class="CHEESE">
@@ -7,28 +7,34 @@
         </div>
       </div>
       <ul class="app_navigation">
-        <a href="/home" class="active">
+        <router-link to="/home" class="active">
           <li class="navigation-item" :class="{'current-tab  slider-bottom':num===0}">首页</li>
-        </a>
-        <a href="/photo" class="active">
-          <li class="navigation-item photo-display" :class="{'current-tab  slider-bottom':num===1}">摄影作品</li>
-        </a>
-        <a href="/vlog" class="active">
+        </router-link>
+        <router-link to="/photo" class="active">
+          <li
+            class="navigation-item photo-display"
+            :class="{'current-tab  slider-bottom':num===1}"
+          >摄影作品</li>
+        </router-link>
+        <router-link to="/vlog" class="active">
           <li class="navigation-item VLOG" :class="{'current-tab  slider-bottom':num===2}">VLOG</li>
-        </a>
-        <a href="/community" class="active">
-          <li class="navigation-item community-delicate" :class="{'current-tab  slider-bottom':num===3}">社区精选</li>
-        </a>
-        <a href="/category" class="active sort-link">
-          <li class="navigation-item sort" :class="{'current-tab  slider-bottom':num===4}">类别</li>
-          <div class="drop-down-wrapper"></div>
-        </a>
-        <a href="/about" class="active">
+        </router-link>
+        <router-link to="/community" class="active">
+          <li
+            class="navigation-item community-delicate"
+            :class="{'current-tab  slider-bottom':num===3}"
+          >社区精选</li>
+        </router-link>
+        <router-link to="/about" class="active">
           <li class="navigation-item aboutAs" :class="{'current-tab  slider-bottom':num===5}">关于本站</li>
-        </a> 
-        <a href="javascript:void(0)" class="active login-link">
+        </router-link>
+        <a href="javascript:void(0)" class="active login-link" @click="loginClick">
           <img src="../../assets/imgs/crown.png" alt class="login-img" />
-          <li class="navigation-item login" :class="{'current-tab  slider-bottom':num===6}" style="display: inline-block;">注册|登录</li>
+          <li
+            class="navigation-item login"
+            :class="{'current-tab  slider-bottom':num===6}"
+            style="display: inline-block;"
+          >{{user&&user._id?user.username:"登录|注册"}}</li>
         </a>
       </ul>
     </div>
@@ -36,41 +42,67 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
-  props:{
-    num:{
-      type:Number,
-      default:0
+  props: {
+    num: {
+      type: Number,
+      default: 0
     }
   },
-  data(){
-    return {
+  data() {
+    return {};
+  },
+  methods: {
+    loginClick() {
+      if (this.user && this.user._id) {
+        this.$router.push("/personal");
+      } else {
+        console.log(1);
+        this.$emit("loginClick");
+      }
     }
   },
-  mounted(){
-      let $oLi = $('.navigation-item');
-      $oLi.on('mouseenter', function() {
-          if ($(this).hasClass('slider-bottom')) {
-              return;
-          } else {
-              $(this).addClass('current-tab').parent().siblings().children().not('.slider-bottom').removeClass('current-tab');
-              $(this).css('transform', 'translateY(3px)').parent().siblings().children().css("transform", '');
-          }
-      })
-      $oLi.on('mouseleave', function() {
-          if ($(this).hasClass('slider-bottom')) {
-              return;
-          } else {
-              $(this).removeClass('current-tab');
-              $(this).css('transform', '');
-          }
-
-      })
+  computed: {
+    ...mapState(["user"])
+  },
+  mounted() {
+    let $oLi = $(".navigation-item");
+    $oLi.on("mouseenter", function() {
+      if ($(this).hasClass("slider-bottom")) {
+        return;
+      } else {
+        $(this)
+          .addClass("current-tab")
+          .parent()
+          .siblings()
+          .children()
+          .not(".slider-bottom")
+          .removeClass("current-tab");
+        $(this)
+          .css("transform", "translateY(3px)")
+          .parent()
+          .siblings()
+          .children()
+          .css("transform", "");
+      }
+    });
+    $oLi.on("mouseleave", function() {
+      if ($(this).hasClass("slider-bottom")) {
+        return;
+      } else {
+        $(this).removeClass("current-tab");
+        $(this).css("transform", "");
+      }
+    });
   }
 };
 </script>
 
 <style lang="less" scoped>
+a {
+  text-decoration: none;
+}
 .app_header {
   position: fixed;
   top: 0;
@@ -122,7 +154,7 @@ export default {
       /* color: #000; */
       color: #fff;
       margin-left: 56px;
-      } 
+    }
     .login-link {
       position: relative;
       .login-img {
@@ -135,7 +167,7 @@ export default {
       position: relative;
       margin: 0;
       transition: transform 0.2s ease-in-out;
-        &::before {
+      &::before {
         content: "";
         position: absolute;
         display: inline-block;
@@ -151,14 +183,14 @@ export default {
         transition: width 0.2s ease-in-out;
       }
     }
-    .current-tab{
-      &::before{
-      visibility: visible;
-      opacity: 1;
-      width: 100%;
+    .current-tab {
+      &::before {
+        visibility: visible;
+        opacity: 1;
+        width: 100%;
       }
     }
-  } 
+  }
 }
 
 @keyframes fade {
@@ -172,5 +204,4 @@ export default {
     opacity: 1;
   }
 }
-
 </style>
